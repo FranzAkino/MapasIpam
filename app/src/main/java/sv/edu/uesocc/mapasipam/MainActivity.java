@@ -8,10 +8,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.GoogleMap;
@@ -25,10 +22,10 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MainActivity extends ActionBarActivity  implements GoogleMap.OnMapLongClickListener {
 
-    private  GoogleMap mMap;
+    private  GoogleMap mapa;
     private EditText latitud, longitud;
     private static final int CONFIGURACION_RESULTADO = 1;
-    private UiSettings mUiSettings;
+    private UiSettings uiSettings;
 
 
     @Override
@@ -38,6 +35,14 @@ public class MainActivity extends ActionBarActivity  implements GoogleMap.OnMapL
         setUpMap();
         latitud = (EditText) findViewById(R.id.latitud);
         longitud = (EditText) findViewById(R.id.longitud);
+
+        mapa.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng latLng) {
+
+            }
+        });
+
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -60,12 +65,12 @@ public class MainActivity extends ActionBarActivity  implements GoogleMap.OnMapL
         int id = item.getItemId();
         switch(item.getItemId()){
             case R.id.menu_location:
-              //  double longitud = Double.valueOf(longitud.getText().toString());
-              //  double latitud = Double.valueOf(latitud.getText().toString());
-              //  mMap.addMarker(new MarkerOptions().position(new LatLng(latitud,longitud)).title("Punto Mapa"));
+//                double longitud = Double.valueOf(longitud.getText().toString());
+//                double latitud = Double.valueOf(latitud.getText().toString());
+//                mapa.addMarker(new MarkerOptions().position(new LatLng(latitud, longitud)).title("Punto Mapa"));
                 break;
             case R.id.menu_clear:
-                mMap.clear();
+                mapa.clear();
                 break;
             case R.id.action_settings:
                 Intent i = new Intent(MainActivity.this, Preferencias.class);
@@ -82,15 +87,15 @@ public class MainActivity extends ActionBarActivity  implements GoogleMap.OnMapL
 
     private void setUpMap() {
 
-        if(mMap == null){
-            mMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
+        if(mapa == null){
+            mapa = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
         }
 
-        if (mMap != null)
+        if (mapa != null)
         {
-            mMap.setMyLocationEnabled(true);
-            mUiSettings = mMap.getUiSettings();
-            mMap.setOnMapLongClickListener(this);
+            mapa.setMyLocationEnabled(true);
+            uiSettings = mapa.getUiSettings();
+            mapa.setOnMapLongClickListener(this);
             DefinirConfiguracion();
         }
     }
@@ -114,25 +119,25 @@ public class MainActivity extends ActionBarActivity  implements GoogleMap.OnMapL
     {
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
-        mMap.setMapType(Integer.parseInt(sharedPrefs.getString("tipoMapa", "1")));
+        mapa.setMapType(Integer.parseInt(sharedPrefs.getString("tipoMapa", "1")));
 
-        mUiSettings.setZoomControlsEnabled(sharedPrefs.getBoolean("Zoomcontroll", false));
-        mUiSettings.setRotateGesturesEnabled(sharedPrefs.getBoolean("Rotategesture", false));
-        mUiSettings.setScrollGesturesEnabled(sharedPrefs.getBoolean("Scrollgesture", false));
-        mUiSettings.setZoomGesturesEnabled(sharedPrefs.getBoolean("Zoom Gesture", false));
+        uiSettings.setZoomControlsEnabled(sharedPrefs.getBoolean("Zoomcontroll", false));
+        uiSettings.setRotateGesturesEnabled(sharedPrefs.getBoolean("Rotategesture", false));
+        uiSettings.setScrollGesturesEnabled(sharedPrefs.getBoolean("Scrollgesture", false));
+        uiSettings.setZoomGesturesEnabled(sharedPrefs.getBoolean("Zoom Gesture", false));
 
     }
 
     @Override
     public void onMapLongClick(LatLng point) {
         Toast.makeText(this, "Point Long Click: "+ point, Toast.LENGTH_LONG).show();
-        mMap.clear();
+        mapa.clear();
         CircleOptions circleOptions = new CircleOptions();
         circleOptions.center(point);
         circleOptions.fillColor(Color.HSVToColor(75, new float[]{Color.BLUE, 1, 1}));
         circleOptions.radius(1000);
         circleOptions.strokeWidth(1);
-        Circle circle = mMap.addCircle(circleOptions);
+        Circle circle = mapa.addCircle(circleOptions);
     }
 
 
