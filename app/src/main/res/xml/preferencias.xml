@@ -6,10 +6,9 @@
             android:key="tipoMapa"
             android:title="Seleccione el Tipo de Mapa"
             android:summary="Podra definir el tipo de mapa a usar"
-            android:dialogTitle="Seleccione el Tipo"/>
-            <!--android:entries="@array/DescripcionMapa"-->
-            <!--android:entryValues="@array/TipoMapa"-->
-
+            android:dialogTitle="Seleccione el Tipo"
+            android:entries="@array/DescripcionMapa"
+            android:entryValues="@array/TipoMapa"/>
     </PreferenceCategory>
 
     <PreferenceCategory android:title="Configuracion General">

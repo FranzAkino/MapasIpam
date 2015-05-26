@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="DescripcionMapa">
+        <item >Normal</item>
+        <item >Satelite</item>
+        <item >Terreno</item>
+        <item >Hibrido</item>
+    </string-array>
+    <string-array name="TipoMapa">
+        <item >1</item>
+        <item >2</item>
+        <item >3</item>
+        <item >4</item>
+    </string-array>
+</resources>
