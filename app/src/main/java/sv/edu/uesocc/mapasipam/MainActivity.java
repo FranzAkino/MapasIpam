@@ -14,10 +14,12 @@ import android.widget.Toast;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.UiSettings;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 
 
 public class MainActivity extends ActionBarActivity  implements GoogleMap.OnMapLongClickListener {
@@ -39,7 +41,9 @@ public class MainActivity extends ActionBarActivity  implements GoogleMap.OnMapL
         mapa.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng latLng) {
-
+                mapa.addMarker(new MarkerOptions().position(latLng).
+                icon(BitmapDescriptorFactory
+                        .defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
             }
         });
 
@@ -113,8 +117,6 @@ public class MainActivity extends ActionBarActivity  implements GoogleMap.OnMapL
 
 
 
-
-
     private void DefinirConfiguracion()
     {
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
@@ -139,8 +141,6 @@ public class MainActivity extends ActionBarActivity  implements GoogleMap.OnMapL
         circleOptions.strokeWidth(1);
         Circle circle = mapa.addCircle(circleOptions);
     }
-
-
 
 
 }
