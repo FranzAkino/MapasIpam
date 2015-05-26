@@ -39,10 +39,6 @@ public class MainActivity extends ActionBarActivity  implements GoogleMap.OnMapL
         latitud = (EditText) findViewById(R.id.latitud);
         longitud = (EditText) findViewById(R.id.longitud);
     }
-
-
-
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
