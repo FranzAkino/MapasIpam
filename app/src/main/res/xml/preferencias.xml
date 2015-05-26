@@ -31,5 +31,13 @@
             android:key="Zoom Gesture"
             android:title="Activar Zoom Gesture"
             android:summary="Activar Zoom Gesture"/>
+
+        <EditTextPreference
+            android:key="radioCirculo"
+            android:title="Seleccionar Radio"
+            android:summary="Seleccionar Radio"
+            />
+
+
     </PreferenceCategory>
 </PreferenceScreen>

@@ -18,16 +18,18 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 
 
-public class MainActivity extends ActionBarActivity  implements GoogleMap.OnMapLongClickListener {
+public class MainActivity extends ActionBarActivity  implements GoogleMap.OnMapLongClickListener, GoogleMap.OnMarkerDragListener {
 
-    private  GoogleMap mapa;
+    private GoogleMap mapa;
     private EditText latitud, longitud;
     private static final int CONFIGURACION_RESULTADO = 1;
     private UiSettings uiSettings;
+    CircleOptions circleOptions;
 
 
     @Override
@@ -46,7 +48,6 @@ public class MainActivity extends ActionBarActivity  implements GoogleMap.OnMapL
                         .defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
             }
         });
-
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -69,9 +70,9 @@ public class MainActivity extends ActionBarActivity  implements GoogleMap.OnMapL
         int id = item.getItemId();
         switch(item.getItemId()){
             case R.id.menu_location:
-//                double longitud = Double.valueOf(longitud.getText().toString());
-//                double latitud = Double.valueOf(latitud.getText().toString());
-//                mapa.addMarker(new MarkerOptions().position(new LatLng(latitud, longitud)).title("Punto Mapa"));
+                /*double longitud = Double.valueOf(longitud.getText().toString());
+                double latitud = Double.valueOf(latitud.getText().toString());
+                mapa.addMarker(new MarkerOptions().position(new LatLng(latitud, longitud)).title("Punto Mapa"));*/
                 break;
             case R.id.menu_clear:
                 mapa.clear();
@@ -83,11 +84,6 @@ public class MainActivity extends ActionBarActivity  implements GoogleMap.OnMapL
         }
         return super.onOptionsItemSelected(item);
     }
-
-
-
-
-
 
     private void setUpMap() {
 
@@ -128,13 +124,18 @@ public class MainActivity extends ActionBarActivity  implements GoogleMap.OnMapL
         uiSettings.setScrollGesturesEnabled(sharedPrefs.getBoolean("Scrollgesture", false));
         uiSettings.setZoomGesturesEnabled(sharedPrefs.getBoolean("Zoom Gesture", false));
 
+        circleOptions.radius(sharedPrefs.getFloat("radioCirculo",1000));
+//        circleOptions.fillColor(sharedPrefs.getInt("colorCirculo",));
+
+
+
     }
 
     @Override
     public void onMapLongClick(LatLng point) {
         Toast.makeText(this, "Point Long Click: "+ point, Toast.LENGTH_LONG).show();
         mapa.clear();
-        CircleOptions circleOptions = new CircleOptions();
+        circleOptions = new CircleOptions();
         circleOptions.center(point);
         circleOptions.fillColor(Color.HSVToColor(75, new float[]{Color.BLUE, 1, 1}));
         circleOptions.radius(1000);
@@ -143,4 +144,18 @@ public class MainActivity extends ActionBarActivity  implements GoogleMap.OnMapL
     }
 
 
+    @Override
+    public void onMarkerDragStart(Marker marker) {
+
+    }
+
+    @Override
+    public void onMarkerDrag(Marker marker) {
+
+    }
+
+    @Override
+    public void onMarkerDragEnd(Marker marker) {
+
+    }
 }
