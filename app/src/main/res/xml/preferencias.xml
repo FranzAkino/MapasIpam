@@ -6,10 +6,9 @@
             android:key="tipoMapa"
             android:title="Seleccione el Tipo de Mapa"
             android:summary="Podra definir el tipo de mapa a usar"
-            android:dialogTitle="Seleccione el Tipo"/>
-            <!--android:entries="@array/DescripcionMapa"-->
-            <!--android:entryValues="@array/TipoMapa"-->
-
+            android:dialogTitle="Seleccione el Tipo"
+            android:entries="@array/DescripcionMapa"
+            android:entryValues="@array/TipoMapa"/>
     </PreferenceCategory>
 
     <PreferenceCategory android:title="Configuracion General">
@@ -32,5 +31,13 @@
             android:key="Zoom Gesture"
             android:title="Activar Zoom Gesture"
             android:summary="Activar Zoom Gesture"/>
+
+        <EditTextPreference
+            android:key="radioCirculo"
+            android:title="Seleccionar Radio"
+            android:summary="Seleccionar Radio"
+            />
+
+
     </PreferenceCategory>
 </PreferenceScreen>

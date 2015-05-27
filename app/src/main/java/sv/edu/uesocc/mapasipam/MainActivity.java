@@ -15,19 +15,29 @@ import android.widget.Toast;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.UiSettings;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
+import com.google.android.gms.maps.model.Polygon;
+import com.google.android.gms.maps.model.PolygonOptions;
 
 
-public class MainActivity extends ActionBarActivity implements GoogleMap.OnMapLongClickListener {
 
-    private  GoogleMap mMap;
+
+public class MainActivity extends ActionBarActivity  implements GoogleMap.OnMapLongClickListener {
+
+    private GoogleMap mapa;
     private EditText Latitud, Longitud;
     private static final int CONFIGURACION_RESULTADO = 1;
-    private UiSettings mUiSettings;
-
+    private UiSettings uiSettings;
+    CircleOptions circleOptions;
+    boolean markerClicked;
+    PolygonOptions polygonOptions;
+    Polygon polygon;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +47,9 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMapLo
         Latitud = (EditText) findViewById(R.id.Latitud);
         Longitud = (EditText) findViewById(R.id.Longitud);
     }
+
+
+
 
 
     @Override
@@ -62,10 +75,13 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMapLo
             case R.id.menu_location:
                 double longitud = Double.valueOf(Longitud.getText().toString());
                 double latitud = Double.valueOf(Latitud.getText().toString());
-                mMap.addMarker(new MarkerOptions().position(new LatLng(latitud,longitud)).title("Punto Mapa"));
+                mapa.addMarker(new MarkerOptions().position(new LatLng(latitud,longitud)).title("Punto Mapa"));
+                /*double longitud = Double.valueOf(longitud.getText().toString());
+                double latitud = Double.valueOf(latitud.getText().toString());
+                mapa.addMarker(new MarkerOptions().position(new LatLng(latitud, longitud)).title("Punto Mapa"));*/
                 break;
             case R.id.menu_clear:
-                mMap.clear();
+                mapa.clear();
                 break;
             //case R.id.action_settings:
             //    Intent i = new Intent(MainActivity.this, OpcionesMap.class);
@@ -79,15 +95,15 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMapLo
 
     private void setUpMap() {
 
-        if(mMap == null){
-            mMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
+        if(mapa == null){
+            mapa = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
         }
 
-        if (mMap != null)
+        if (mapa != null)
         {
-            mMap.setMyLocationEnabled(true);
-            mUiSettings = mMap.getUiSettings();
-            mMap.setOnMapLongClickListener(this);
+            mapa.setMyLocationEnabled(true);
+            uiSettings = mapa.getUiSettings();
+            mapa.setOnMapLongClickListener(this);
             DefinirConfiguracion();
         }
     }
@@ -105,30 +121,42 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMapLo
 
 
 
-
-
     private void DefinirConfiguracion()
     {
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
-        mMap.setMapType(Integer.parseInt(sharedPrefs.getString("tipoMapa", "1")));
+        mapa.setMapType(Integer.parseInt(sharedPrefs.getString("tipoMapa", "1")));
 
-        mUiSettings.setZoomControlsEnabled(sharedPrefs.getBoolean("Zoomcontroll", false));
-        mUiSettings.setRotateGesturesEnabled(sharedPrefs.getBoolean("Rotategesture", false));
-        mUiSettings.setScrollGesturesEnabled(sharedPrefs.getBoolean("Scrollgesture", false));
-        mUiSettings.setZoomGesturesEnabled(sharedPrefs.getBoolean("Zoom Gesture", false));
+        uiSettings.setZoomControlsEnabled(sharedPrefs.getBoolean("Zoomcontroll", false));
+        uiSettings.setRotateGesturesEnabled(sharedPrefs.getBoolean("Rotategesture", false));
+        uiSettings.setScrollGesturesEnabled(sharedPrefs.getBoolean("Scrollgesture", false));
+        uiSettings.setZoomGesturesEnabled(sharedPrefs.getBoolean("Zoom Gesture", false));
+
+        circleOptions.radius(sharedPrefs.getFloat("radioCirculo",1000));
+//        circleOptions.fillColor(sharedPrefs.getInt("colorCirculo",));
+
+
 
     }
 
     @Override
     public void onMapLongClick(LatLng point) {
         Toast.makeText(this, "Point Long Click: " + point, Toast.LENGTH_LONG).show();
-        mMap.clear();
+        mapa.clear();
         CircleOptions circleOptions = new CircleOptions();
+        Toast.makeText(this, "Point Long Click: "+ point, Toast.LENGTH_LONG).show();
+        mapa.clear();
+        circleOptions = new CircleOptions();
         circleOptions.center(point);
         circleOptions.fillColor(Color.HSVToColor(75, new float[]{Color.BLUE, 1, 1}));
         circleOptions.radius(1000);
         circleOptions.strokeWidth(1);
-        Circle circle = mMap.addCircle(circleOptions);
+        Circle circle = mapa.addCircle(circleOptions);
     }
+
 }
+
+
+
+
+
