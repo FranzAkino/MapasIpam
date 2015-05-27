@@ -149,9 +149,8 @@ public class MainActivity extends ActionBarActivity  implements GoogleMap.OnMapL
         uiSettings.setZoomGesturesEnabled(sharedPrefs.getBoolean("Zoom Gesture", false));
 
         if(circleOptions!=null) {
-            circleOptions.radius(Float.valueOf(sharedPrefs.getString("radioCirculo", "1000")));
-            circleOptions.fillColor(sharedPrefs.getInt("colorCirculo", Color.RED));
-            circle = mapa.addCircle(circleOptions);
+            circle.setRadius(Float.valueOf(sharedPrefs.getString("radioCirculo", "1000")));
+            circle.setFillColor(sharedPrefs.getInt("colorCirculo", Color.RED));
         }
     }
 
