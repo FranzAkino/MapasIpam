@@ -21,6 +21,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
+import com.google.android.gms.maps.model.Polygon;
+import com.google.android.gms.maps.model.PolygonOptions;
 
 
 public class MainActivity extends ActionBarActivity  implements GoogleMap.OnMapLongClickListener, GoogleMap.OnMarkerDragListener {
@@ -30,7 +32,9 @@ public class MainActivity extends ActionBarActivity  implements GoogleMap.OnMapL
     private static final int CONFIGURACION_RESULTADO = 1;
     private UiSettings uiSettings;
     CircleOptions circleOptions;
-
+    boolean markerClicked;
+    PolygonOptions polygonOptions;
+    Polygon polygon;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,10 +48,15 @@ public class MainActivity extends ActionBarActivity  implements GoogleMap.OnMapL
             @Override
             public void onMapClick(LatLng latLng) {
                 mapa.addMarker(new MarkerOptions().position(latLng).
-                icon(BitmapDescriptorFactory
-                        .defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
+                        icon(BitmapDescriptorFactory
+                                .defaultMarker(BitmapDescriptorFactory.HUE_YELLOW))
+                                .draggable(true));
+
             }
         });
+        mapa.setOnMarkerDragListener(this);
+
+        markerClicked = false;
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -146,16 +155,16 @@ public class MainActivity extends ActionBarActivity  implements GoogleMap.OnMapL
 
     @Override
     public void onMarkerDragStart(Marker marker) {
-
+        latitud.setText("Marker " + marker.getId() + " DragStart");
     }
 
     @Override
     public void onMarkerDrag(Marker marker) {
-
+        latitud.setText("Marker " + marker.getId() + " Drag@" + marker.getPosition());
     }
 
     @Override
     public void onMarkerDragEnd(Marker marker) {
-
+        latitud.setText("Marker " + marker.getId() + " DragEnd");
     }
 }
