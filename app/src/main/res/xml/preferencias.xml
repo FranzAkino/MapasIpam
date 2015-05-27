@@ -35,9 +35,13 @@
         <EditTextPreference
             android:key="radioCirculo"
             android:title="Seleccionar Radio"
-            android:summary="Seleccionar Radio"
-            />
+            android:numeric="decimal"
+            android:summary="Seleccionar Radio"/>
 
+        <yuku.ambilwarna.widget.AmbilWarnaPreference
+            android:key="colorCirculo"
+            android:defaultValue="0xff6699cc"
+            android:title="Color para el circulo" />
 
     </PreferenceCategory>
 </PreferenceScreen>
