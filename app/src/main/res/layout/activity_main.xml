@@ -6,39 +6,49 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".MainActivity">
 
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
 
-        <EditText
-            android:id="@+id/Latitud"
-            android:hint="latitud"
-            android:layout_width="wrap_content"
-            android:layout_height="fill_parent" />
-        <EditText
-            android:id="@+id/Longitud"
-            android:hint="longitud"
-            android:layout_width="wrap_content"
-            android:layout_height="fill_parent" />
-        <Button
-            android:id="@+id/gpsBoton"
-            android:text="GPS"
-            android:layout_width="wrap_content"
-            android:layout_height="fill_parent" />
+    <LinearLayout android:layout_height="wrap_content" android:layout_width="fill_parent">
+
+    <EditText android:layout_height="fill_parent" android:layout_width="wrap_content" android:hint="latitud" android:id="@+id/Latitud"/>
+
+    <EditText android:layout_height="fill_parent" android:layout_width="wrap_content" android:hint="longitud" android:id="@+id/Longitud"/>
+
+    <Button android:layout_height="fill_parent" android:layout_width="wrap_content" android:id="@+id/gpsBoton" android:text="GPS"/>
+
+</LinearLayout>
+
+    <LinearLayout android:layout_height="wrap_content" android:layout_width="fill_parent"> </LinearLayout>
 
 
-        </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
-
-        </LinearLayout>
-
-    <fragment
-        android:id="@+id/map"
+    <TextView
+        android:id="@+id/dist_tiempo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/lbl_dist_tiempo"
+        android:layout_alignParentTop="true" />
+    <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        class="com.google.android.gms.maps.MapFragment"/>
+        android:orientation="horizontal" >
+    <Button
+        android:id="@+id/btn_bus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/btnruta"
+        android:layout_alignParentRight="true" />
+
+    <EditText
+        android:id="@+id/lugarnombre"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:inputType="text"
+        android:hint="@string/lbl_lugares"
+        android:layout_toLeftOf="@id/btn_bus" />
+    </RelativeLayout>
+    <fragment
+        android:id="@+id/map"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        class="com.google.android.gms.maps.SupportMapFragment" />
 
 </LinearLayout>
