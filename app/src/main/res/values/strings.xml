@@ -8,5 +8,8 @@
     <string name="btnruta">Buscar</string>
     <string name="lbl_dist_tiempo">Distancia</string>
     <string name="lbl_lugares">Ingrese el lugar</string>
+    <string name="lbldriving">En carro</string>
+    <string name="lblbicycling">En bici</string>
+    <string name="lblwalking">A pie</string>
 
 </resources>

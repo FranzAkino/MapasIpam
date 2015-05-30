@@ -8,24 +8,22 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
-import android.text.Editable;
-import android.text.TextWatcher;
+
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.AutoCompleteTextView;
-import android.widget.AdapterView.OnItemClickListener;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.SimpleAdapter;
+
 import android.widget.TextView;
 import android.widget.Toast;
 import android.location.Geocoder;
-import com.google.android.gms.maps.CameraUpdate;
+
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
@@ -71,6 +69,16 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMapLo
     MarkerOptions markerOptions;
     LatLng latLng;
 
+    RadioButton rbcarro;
+    RadioButton rbBici;
+    RadioButton rbpie;
+    RadioGroup rgModos;
+
+    int mModo = 0;
+    final int MODE_CARRO = 0;
+    final int MODE_BICI = 1;
+    final int MODE_APIE = 2; //xD
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,6 +87,19 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMapLo
         Latitud = (EditText) findViewById(R.id.Latitud);
         Longitud = (EditText) findViewById(R.id.Longitud);
         distTiempo = (TextView) findViewById(R.id.dist_tiempo);
+
+        // Getting reference to rb_driving
+        rbcarro = (RadioButton) findViewById(R.id.rb_carro);
+
+        // Getting reference to rb_bicylcing
+        rbBici = (RadioButton) findViewById(R.id.rb_bici);
+
+        // Getting reference to rb_walking
+        rbpie = (RadioButton) findViewById(R.id.rb_apie);
+
+        // Getting Reference to rg_modes
+        rgModos = (RadioGroup) findViewById(R.id.rg_modos);
+
 
         // Inicializar
         markerPoints = new ArrayList<LatLng>();
@@ -95,6 +116,27 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMapLo
 
             // Enable MyLocation Button in the Map
             mapa.setMyLocationEnabled(true);
+            ////////////////////////////////modos de ruta//////////////////////////////////
+            rgModos.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+
+                @Override
+                public void onCheckedChanged(RadioGroup group, int checkedId) {
+
+                    // Checks, whether start and end locations are captured
+                    if(markerPoints.size() >= 2){
+                        LatLng origin = markerPoints.get(0);
+                        LatLng dest = markerPoints.get(1);
+
+                        // Getting URL to the Google Directions API
+                        String url = getDirectionsUrl(origin, dest);
+
+                        DownloadTask downloadTask = new DownloadTask();
+
+                        // Start downloading json data from Google Directions API
+                        downloadTask.execute(url);
+                    }
+                }
+            });
             ////////////////////////////////Autocompletar---búsqueda//////////////////////////////////
             OnClickListener findClickListener = new OnClickListener() {
                 @Override
@@ -116,6 +158,7 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMapLo
 
 
             //////////////////////////////////////////////////////////////////////////////////////////
+            // Setting onclick event listener for the map
             mapa.setOnMapClickListener(new OnMapClickListener() {
 
                 @Override
@@ -130,25 +173,8 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMapLo
                     // Adding new item to the ArrayList
                     markerPoints.add(point);
 
-                    // Creating MarkerOptions
-                    MarkerOptions options = new MarkerOptions();
-
-                    // Setting the position of the marker
-                    options.position(point);
-
-                    /**
-                     * For the start location, the color of marker is GREEN and
-                     * for the end location, the color of marker is RED.
-                     */
-
-                    if(markerPoints.size()==1){
-                        options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)).draggable(true);
-                    }else if(markerPoints.size()==2){
-                        options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)).draggable(true);
-                    }
-
-                    // Add new marker to the Google Map Android API V2
-                    mapa.addMarker(options);
+                    // Draws Start and Stop markers on the Google Map
+                    dibujarmarcadores();
 
                     // Checks, whether start and end locations are captured
                     if(markerPoints.size() >= 2){
@@ -180,13 +206,38 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMapLo
 
 
     }
+    // Drawing Start and Stop locations
+    private void dibujarmarcadores(){
+
+        for(int i=0;i<markerPoints.size();i++){
+
+            // Creating MarkerOptions
+            MarkerOptions options = new MarkerOptions();
+
+            // Setting the position of the marker
+            options.position(markerPoints.get(i) );
+
+            /**
+             * For the start location, the color of marker is GREEN and
+             * for the end location, the color of marker is RED.
+             */
+            if(i==0){
+                options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+            }else if(i==1){
+                options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+            }
+
+            // Add new marker to the Google Map Android API V2
+            mapa.addMarker(options);
+        }
+    }
     private void drawMarker(LatLng point){
 
         MarkerOptions mOptions = new MarkerOptions();
         mOptions.position(point);
-        if(markerPoints.size()==1){
+        if(markerPoints.size()==0){
             mOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)).draggable(true);
-        }else if(markerPoints.size()==2){
+        }else if(markerPoints.size()==1){
             mOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)).draggable(true);
         }
         mapa.addMarker(mOptions);
@@ -330,9 +381,21 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMapLo
 
         // Sensor enabled
         String sensor = "sensor=false";
+// Travelling Mode
+        String mode = "mode=driving";
 
+        if(rbcarro.isChecked()){
+            mode = "mode=driving";
+            mModo = 0 ;
+        }else if(rbBici.isChecked()){
+            mode = "mode=bicycling";
+            mModo = 1;
+        }else if(rbpie.isChecked()){
+            mode = "mode=walking";
+            mModo = 2;
+        }
         // Building the parameters to the web service
-        String parameters = str_origin+"&"+str_dest+"&"+sensor;
+        String parameters = str_origin+"&"+str_dest+"&"+sensor+"&"+mode;
 
         // Output format
         String output = "json";
@@ -480,9 +543,18 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMapLo
                 // Adding all the points in the route to LineOptions
                 lineOptions.addAll(points);
                 lineOptions.width(3);
-                lineOptions.color(Color.MAGENTA);
+                // Changing the color polyline according to the mode
+                if(mModo == MODE_CARRO)
+                    lineOptions.color(Color.RED);
+                else if(mModo == MODE_BICI)
+                    lineOptions.color(Color.GREEN);
+                else if(mModo == MODE_APIE)
+                    lineOptions.color(Color.BLUE);
             }
-
+            if(result.size()<1){
+                Toast.makeText(getBaseContext(), "No Points", Toast.LENGTH_SHORT).show();
+                return;
+            }
             distTiempo.setText("Distancia:"+distance + ", Tiempo:"+duration);
 
             // Drawing polyline in the Google Map for the i-th route

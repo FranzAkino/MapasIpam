@@ -45,10 +45,35 @@
         android:hint="@string/lbl_lugares"
         android:layout_toLeftOf="@id/btn_bus" />
     </RelativeLayout>
+
+
+    <RadioGroup
+        android:id="@+id/rg_modos"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal" >
+
+        <RadioButton android:id="@+id/rb_carro"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/lbldriving"
+            android:checked="true" />
+
+        <RadioButton android:id="@+id/rb_bici"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/lblbicycling" />
+
+        <RadioButton android:id="@+id/rb_apie"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/lblwalking" />
+
+    </RadioGroup>
     <fragment
         android:id="@+id/map"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        class="com.google.android.gms.maps.SupportMapFragment" />
-
+        class="com.google.android.gms.maps.SupportMapFragment" />rt6trfd
 </LinearLayout>
