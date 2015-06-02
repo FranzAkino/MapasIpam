@@ -9,13 +9,13 @@
 
     <LinearLayout android:layout_height="wrap_content" android:layout_width="fill_parent">
 
-    <EditText android:layout_height="fill_parent" android:layout_width="wrap_content" android:hint="latitud" android:id="@+id/Latitud"/>
+    <EditText android:layout_height="fill_parent" android:layout_width="0dp" android:hint="latitud" android:id="@+id/Latitud"
+        android:layout_weight="1" />
 
-    <EditText android:layout_height="fill_parent" android:layout_width="wrap_content" android:hint="longitud" android:id="@+id/Longitud"/>
+    <EditText android:layout_height="fill_parent" android:layout_width="0dp" android:hint="longitud" android:id="@+id/Longitud"
+        android:layout_weight="1" />
 
-    <Button android:layout_height="fill_parent" android:layout_width="wrap_content" android:id="@+id/gpsBoton" android:text="GPS"/>
-
-</LinearLayout>
+    </LinearLayout>
 
     <LinearLayout android:layout_height="wrap_content" android:layout_width="fill_parent"> </LinearLayout>
 
@@ -75,5 +75,5 @@
         android:id="@+id/map"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        class="com.google.android.gms.maps.SupportMapFragment" />rt6trfd
+        class="com.google.android.gms.maps.SupportMapFragment" />
 </LinearLayout>

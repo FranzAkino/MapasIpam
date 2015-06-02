@@ -43,5 +43,10 @@
             android:defaultValue="0xff6699cc"
             android:title="Color para el circulo" />
 
+        <SwitchPreference
+            android:key="centrarEn"
+
+            />
+
     </PreferenceCategory>
 </PreferenceScreen>

@@ -1,9 +1,13 @@
 package sv.edu.uesocc.mapasipam;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.location.Address;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -39,6 +43,7 @@ import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -51,9 +56,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-
 public class MainActivity extends ActionBarActivity implements GoogleMap.OnMapLongClickListener,GoogleMap.OnMarkerDragListener{
-
 
     private GoogleMap mapa;
     private EditText Latitud, Longitud;
@@ -79,6 +82,9 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMapLo
     final int MODE_BICI = 1;
     final int MODE_APIE = 2; //xD
 
+    private LocationListener locationListener;
+    private LocationManager locationManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,6 +106,7 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMapLo
         // Getting Reference to rg_modes
         rgModos = (RadioGroup) findViewById(R.id.rg_modos);
 
+        locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
 
         // Inicializar
         markerPoints = new ArrayList<LatLng>();
@@ -111,6 +118,12 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMapLo
         mapa = fm.getMap();
         // Getting reference to Button
         Button btnBus = (Button) findViewById(R.id.btn_bus);
+
+
+
+        iniciarUbicacion();
+
+
 
         if (mapa != null) {
 
@@ -134,6 +147,7 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMapLo
 
                         // Start downloading json data from Google Directions API
                         downloadTask.execute(url);
+
                     }
                 }
             });
@@ -204,9 +218,56 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMapLo
             }
         }
 
+    }
 
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        Latitud.setText(savedInstanceState.getString("latitud"));
+        Longitud.setText(savedInstanceState.getString("longitud"));
+    }
+
+
+
+    private void iniciarUbicacion(){
+        Location loc = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        obtenerPosicion(loc);
+
+
+        Toast.makeText(this, "iniciarUbicacion", Toast.LENGTH_SHORT);
+
+        locationListener = new LocationListener() {
+            public void onLocationChanged(Location location) {
+                obtenerPosicion(location);
+            }
+            public void onStatusChanged(String s, int i, Bundle bundle) {
+
+            }
+            public void onProviderEnabled(String s) {
+
+            }
+
+            public void onProviderDisabled(String s) {
+
+            }
+
+        };
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,20000,0,locationListener);
+    }
+
+    private void obtenerPosicion(Location location) {
+        if(location!=null) {
+            Toast.makeText(this,"obtenerPosicion",Toast.LENGTH_SHORT);
+            Latitud.setText(String.valueOf(location.getLatitude()));
+            Longitud.setText(String.valueOf(location.getLongitude()));
+//            mapa.addMarker(new MarkerOptions().position(new LatLng(location.getLatitude(),location.getLongitude())).title("Punto Mapa"));
+        }else{
+            Latitud.setText("sin valor");
+            Longitud.setText("sin valor");
+        }
     }
     // Drawing Start and Stop locations
+
     private void dibujarmarcadores(){
 
         for(int i=0;i<markerPoints.size();i++){
@@ -232,7 +293,6 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMapLo
         }
     }
     private void drawMarker(LatLng point){
-
         MarkerOptions mOptions = new MarkerOptions();
         mOptions.position(point);
         if(markerPoints.size()==0){
@@ -244,9 +304,10 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMapLo
     }
     @Override
     protected void onSaveInstanceState(Bundle outState) {
+        outState.putString("longitud",Longitud.getText().toString());
+        outState.putString("latitud",Latitud.getText().toString());
         // Adding the pointList arraylist to Bundle
         outState.putParcelableArrayList("points", markerPoints);
-
         // Saving the bundle
         super.onSaveInstanceState(outState);
     }
@@ -256,7 +317,6 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMapLo
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -271,12 +331,7 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMapLo
         int id = item.getItemId();
         switch(item.getItemId()){
             case R.id.menu_location:
-                double longitud = Double.valueOf(Longitud.getText().toString());
-                double latitud = Double.valueOf(Latitud.getText().toString());
-                mapa.addMarker(new MarkerOptions().position(new LatLng(latitud,longitud)).title("Punto Mapa"));
-                /*double longitud = Double.valueOf(longitud.getText().toString());
-                double latitud = Double.valueOf(latitud.getText().toString());
-                mapa.addMarker(new MarkerOptions().position(new LatLng(latitud, longitud)).title("Punto Mapa"));*/
+                iniciarUbicacion();
                 break;
             case R.id.menu_clear:
                 mapa.clear();
@@ -284,6 +339,10 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMapLo
             case R.id.action_settings:
                 Intent i = new Intent(MainActivity.this, Preferencias.class);
                 startActivityForResult(i, CONFIGURACION_RESULTADO);
+                break;
+            case R.id.integrantes:
+                Intent j = new Intent(MainActivity.this, Integrantes.class);
+                startActivity(j);
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -331,7 +390,7 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMapLo
         uiSettings.setScrollGesturesEnabled(sharedPrefs.getBoolean("Scrollgesture", false));
         uiSettings.setZoomGesturesEnabled(sharedPrefs.getBoolean("Zoom Gesture", false));
 
-        if(circleOptions!=null) {
+        if(circle!=null) {
             circle.setRadius(Float.valueOf(sharedPrefs.getString("radioCirculo", "1000")));
             circle.setFillColor(sharedPrefs.getInt("colorCirculo", Color.RED));
         }

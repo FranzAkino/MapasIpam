@@ -1,0 +1,53 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:orientation="vertical"
+    tools:context="sv.edu.uesocc.mapasipam.Integrantes"
+    android:gravity="center_vertical">
+
+
+
+    <TextView
+        android:text="Integrantes"
+        android:textStyle="bold"
+        android:textSize="50px"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="30px"
+        android:layout_gravity="center_horizontal" />
+
+    <TextView
+        android:text="Aquino Hernández, Francisco José"
+        android:textSize="45px"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="20px"
+        android:layout_gravity="center_horizontal" />
+
+    <TextView
+        android:text="Morán Jiménez, Josué Benjamín"
+        android:layout_width="wrap_content"
+        android:textSize="45px"
+        android:paddingBottom="20px"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal" />
+
+    <TextView
+        android:text="Nerio, Yanci"
+        android:textSize="45px"
+        android:paddingBottom="20px"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal" />
+
+    <TextView
+        android:text="Peraza, Marcela Idania"
+        android:textSize="45px"
+        android:paddingBottom="20px"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal" />
+</LinearLayout>

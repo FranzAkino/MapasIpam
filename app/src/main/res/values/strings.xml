@@ -2,7 +2,8 @@
     <string name="app_name">MapasIpam</string>
 
     <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_settings">Configuraciones</string>
+    <string name="integrantes">Integrantes</string>
     <string name="title_activity_preferencias">Preferencias</string>
     <string name="lbllocaltion">location</string>
     <string name="btnruta">Buscar</string>
@@ -11,5 +12,6 @@
     <string name="lbldriving">En carro</string>
     <string name="lblbicycling">En bici</string>
     <string name="lblwalking">A pie</string>
+    <string name="title_activity_integrantes">Integrantes</string>
 
 </resources>
