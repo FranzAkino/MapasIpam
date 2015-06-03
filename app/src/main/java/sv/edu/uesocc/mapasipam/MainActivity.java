@@ -209,9 +209,12 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMapLo
             if(savedInstanceState!=null){
                 if(savedInstanceState.containsKey("points")){
                     markerPoints = savedInstanceState.getParcelableArrayList("points");
-                    if(markerPoints!=null){
+                    if(markerPoints!= null){
+                        int x = 0;
                         for(int i=0;i<markerPoints.size();i++){
-                            drawMarker(markerPoints.get(i));
+
+                            marcadorHorizontal(markerPoints.get(i), x);
+                            x++;
                         }
                     }
                 }
@@ -225,9 +228,30 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMapLo
         super.onRestoreInstanceState(savedInstanceState);
         Latitud.setText(savedInstanceState.getString("latitud"));
         Longitud.setText(savedInstanceState.getString("longitud"));
+        if(savedInstanceState!=null){
+            if(savedInstanceState.containsKey("points")){
+                markerPoints = savedInstanceState.getParcelableArrayList("points");
+                if(markerPoints!= null){
+                    int x = 0;
+                    for(int i=0;i<markerPoints.size();i++){
+
+                        marcadorHorizontal(markerPoints.get(i), x);
+                        x++;
+                    }
+                }
+            }
+        }
     }
 
-
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putString("longitud",Longitud.getText().toString());
+        outState.putString("latitud",Latitud.getText().toString());
+        // Adding the pointList arraylist to Bundle
+        outState.putParcelableArrayList("points", markerPoints);
+        // Saving the bundle
+        super.onSaveInstanceState(outState);
+    }
 
     private void iniciarUbicacion(){
         Location loc = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
@@ -244,11 +268,14 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMapLo
 
             }
             public void onProviderEnabled(String s) {
+                Toast.makeText(getBaseContext(), "GPS Activado.", Toast.LENGTH_SHORT).show();
+                return;
 
             }
 
             public void onProviderDisabled(String s) {
-
+                Toast.makeText(getBaseContext(), "GPS Desactivado.", Toast.LENGTH_SHORT).show();
+                return;
             }
 
         };
@@ -285,32 +312,25 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMapLo
             if(i==0){
                 options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
             }else if(i==1){
-                options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+                options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
             }
 
             // Add new marker to the Google Map Android API V2
             mapa.addMarker(options);
         }
     }
-    private void drawMarker(LatLng point){
+    private void marcadorHorizontal(LatLng point, int x){
+
         MarkerOptions mOptions = new MarkerOptions();
         mOptions.position(point);
-        if(markerPoints.size()==0){
+        if(x == 0){
             mOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)).draggable(true);
-        }else if(markerPoints.size()==1){
-            mOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)).draggable(true);
+        }else if(x==1){
+            mOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)).draggable(true);
         }
         mapa.addMarker(mOptions);
     }
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        outState.putString("longitud",Longitud.getText().toString());
-        outState.putString("latitud",Latitud.getText().toString());
-        // Adding the pointList arraylist to Bundle
-        outState.putParcelableArrayList("points", markerPoints);
-        // Saving the bundle
-        super.onSaveInstanceState(outState);
-    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -568,7 +588,7 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMapLo
             String duration = "";
 
             if(result.size()<1){
-                Toast.makeText(getBaseContext(), "No Points", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getBaseContext(), "No hay ruta disponible.", Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -608,10 +628,10 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMapLo
                 else if(mModo == MODE_BICI)
                     lineOptions.color(Color.GREEN);
                 else if(mModo == MODE_APIE)
-                    lineOptions.color(Color.BLUE);
+                    lineOptions.color(Color.BLACK);
             }
             if(result.size()<1){
-                Toast.makeText(getBaseContext(), "No Points", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getBaseContext(), "No hay ruta disponible", Toast.LENGTH_SHORT).show();
                 return;
             }
             distTiempo.setText("Distancia:"+distance + ", Tiempo:"+duration);
@@ -644,7 +664,7 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMapLo
         protected void onPostExecute(List<Address> addresses) {
 
             if(addresses==null || addresses.size()==0){
-                Toast.makeText(getBaseContext(), "No Location found", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getBaseContext(), "No se encontró la ubicación", Toast.LENGTH_SHORT).show();
             }
 
             // Clears all the existing markers on the map
@@ -665,7 +685,8 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMapLo
                 markerOptions = new MarkerOptions();
                 markerOptions.position(latLng);
                 markerOptions.title(addressText);
-
+                markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE));
+                markerOptions.draggable(true);
                 mapa.addMarker(markerOptions);
 
                 // Locate the first location
